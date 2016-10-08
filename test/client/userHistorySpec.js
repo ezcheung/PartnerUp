@@ -16,45 +16,33 @@ describe('On the User History page,', function() {
 
   var testStus = [
     {
-      user: {
-        name: "Elliot Cheung",
-        uid: "0"
-      },
+      name: "Elliot Cheung",
+      uid: "0",
       role: "student"
     },
     {
-      user: {
-        name: "Kathryn Hansen",
-        uid: "1"
-      },
+      name: "Kathryn Hansen",
+      uid: "1",
       role: "student"
     },
     {
-      user: {
-        name: "Ryan Walter",
-        uid: "2"
-      },
+      name: "Ryan Walter",
+      uid: "2",
       role: "student"
     },
     {
-      user: {
-        name: "Iliya Svirsky",
-        uid: "3"
-      },
+      name: "Iliya Svirsky",
+      uid: "3",
       role: "student"
     },
     {
-      user: {
-        name: "Gilbert Garza",
-        uid: '4'
-      },
+      name: "Gilbert Garza",
+      uid: '4',
       role: 'instructor'
     },
     {
-      user: {
-        name: "Jimmy Stevenson",
-        uid: '5'
-      },
+      name: "Jimmy Stevenson",
+      uid: '5',
       role: 'fellow'
     }
   ];
@@ -148,10 +136,67 @@ describe('On the User History page,', function() {
         createController();
         expect($scope.filterGensByName(pools[1].generations[0])).toBe(true);
         expect($scope.filterGensByName(pools[0].generations[0])).toBe(true);
-        $scope.searchPools = '';
+        $scope.searchGens = '';
         expect($scope.filterGensByName(pools[1].generations[0])).toBe(true);
         expect($scope.filterGensByName(pools[0].generations[0])).toBe(true);
       });
+    });
+    describe('$scope.filterGensForStu', function() {
+      it('should be defined', function() {
+        createController();
+        expect($scope.filterGensForStu).toBeDefined();
+      });
+      it('should be able to filter generations by student name', function() {
+        createController();
+        $scope.searchStus = "Elliot";
+        expect($scope.filterGensForStu(pools[0].generations[0])).toBeTruthy();
+        expect($scope.filterGensForStu(pools[0].generations[1])).toBeFalsy();
+        expect($scope.filterGensForStu(pools[1].generations[0])).toBeTruthy();
+      });
+      it('should be case-insensitive', function() {
+        createController();
+        $scope.searchStus = "eLLiOT";
+        expect($scope.filterGensForStu(pools[0].generations[0])).toBeTruthy();
+        expect($scope.filterGensForStu(pools[0].generations[1])).toBeFalsy();
+      });
+      it('should return true if there is no search parameter', function() {
+        createController();
+        expect($scope.filterGensForStu(pools[1].generations[0])).toBeTruthy();
+        expect($scope.filterGensForStu(pools[0].generations[0])).toBeTruthy();
+        $scope.searchStus = '';
+        expect($scope.filterGensForStu(pools[1].generations[0])).toBeTruthy();
+        expect($scope.filterGensForStu(pools[0].generations[0])).toBeTruthy();
+      });
+    });
+    describe('$scope.filterGens', function() {
+      it('should be defined', function() {
+        createController();
+        expect($scope.filterGens).toBeDefined();
+      });
+      it('should be able to filter generations by name and by student', function() {
+        createController();
+        $scope.searchGens = "WithZeroAndOne2";
+        $scope.searchStus = "Elliot";
+        expect($scope.filterGens(pools[1].generations[0])).toBeTruthy();
+        expect($scope.filterGens(pools[0].generations[1])).toBeFalsy();
+        expect($scope.filterGens(pools[0].generations[0])).toBeFalsy();
+      });
+      it('should return true if there is no search parameter', function() {
+        createController();
+        expect($scope.filterGens(pools[1].generations[0])).toBeTruthy();
+        expect($scope.filterGens(pools[0].generations[0])).toBeTruthy();
+        $scope.searchGens = '';
+        $scope.searchStus = '';
+        expect($scope.filterGens(pools[1].generations[0])).toBeTruthy();
+        expect($scope.filterGens(pools[0].generations[0])).toBeTruthy();
+      });
+    });
+  });
+  describe('$scope.switchUser', function() {
+    it('should switch paths to a given user\'s page', function() {
+      createController();
+      $scope.switchUser(testStus[0]);
+      expect($location.path()).toBe('/users/0');
     });
   });
 });
